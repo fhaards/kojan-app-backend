@@ -4,11 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Eloquent;
 
 class Category extends Model
 {
     use HasFactory;
-
+    protected $table = 'categories';
+    public function products()
+    {
+        return $this->hasMany(Products::class);
+    }
     /**
      * The attributes that are mass assignable.
      *
