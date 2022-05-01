@@ -26,7 +26,7 @@ class AuthController extends BaseController
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
+        $success['token'] =  $user->createToken('myapptoken')->plainTextToken;
         $success['name'] =  $user->name;
 
         return $this->sendResponse($success, 'User register successfully.');
@@ -36,7 +36,7 @@ class AuthController extends BaseController
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken;
+            $success['token'] =  $user->createToken('myapptoken')->plainTextToken;
             $success['name'] =  $user->name;
 
             return $this->sendResponse($success, 'User login successfully.');
@@ -48,7 +48,7 @@ class AuthController extends BaseController
     public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
-
+        // $request->user()->currentAccessToken()->delete();
         return [
             'message' => 'Logged out'
         ];
