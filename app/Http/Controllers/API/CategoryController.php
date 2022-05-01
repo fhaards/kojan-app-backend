@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\HttpResponse\InternalServerError;
+use App\Exceptions\HttpResponse\NotFound;
+use App\Exceptions\ResourceNotFound;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Category;
@@ -35,14 +38,17 @@ class CategoryController extends BaseController
 
     public function show($id)
     {
-        $category = Category::find($id);
-        if (is_null($category)) {
-            return $this->sendError('Category not found.');
+        try {
+            /** @var Category|null */
+            $category = Category::findByIdOrFail($id);
+            return CategoryResource::make($category);
+        } catch (ResourceNotFound $e) {
+            throw new NotFound($e->getMessage());
+        } catch (\Throwable $e) {
+            throw new InternalServerError();
         }
-        return $this->sendResponse(new CategoryResource($category), 'Category retrieved successfully.');
     }
-
-
+    
     public function update(Request $request, Category $category)
     {
         $input = $request->all();

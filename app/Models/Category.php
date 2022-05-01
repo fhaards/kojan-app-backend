@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\ResourceNotFound;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Eloquent;
@@ -37,4 +38,13 @@ class Category extends Model
      * @var array<string, string>
      */
     protected $casts = [];
+
+    public static function findByIdOrFail(int $id): self
+    {
+        $category = Category::find($id);
+        if (is_null($category)) {
+            throw new ResourceNotFound('Category not found');
+        }
+        return $category;
+    }
 }
